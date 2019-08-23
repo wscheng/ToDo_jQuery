@@ -1,0 +1,116 @@
+<!--
+    * html 5 need to add these 2 line.
+    <!doctype html>
+    <html lang="">
+        => if lang not added,
+        [W3C] validator says
+        Warning: Consider adding a lang attribute to the html start tag to declare the language of this document.
+    * There is no zh_TW for lang attribute. Use Chinese (Traditional) zh-Hant.
+    https://www.w3schools.com/tags/ref_language_codes.asp
+-->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+      integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" type="text/css" href="todoapp.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Livvic&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>wscheng's ToDo App (implemented by jQuery)</title>
+  </head>
+
+  <body>
+    <div class="container text-center todo-body">
+      <h1>someone's ToDo List</h1>
+      <div class="container">
+        <div class="row todo-titles">
+          <div class="col selected"><a href="#todo">ToDo</a></div>
+          <div class="col"><a href="#all">All</a></div>
+          <div class="col"><a href="#done">Done</a></div>
+        </div>
+      </div>
+      <div class="container greencheck" id="todo-sheet">
+        <div class="row pinkcheck todo-item ongoing">
+          <div class="col-1 greencheck">
+            <input type="checkbox" />
+          </div>
+          <div class="col-10 text-left">Eat breakfast</div>
+          <div class="col-1 text-right">
+            <img src="img/trash_can.svg" />
+          </div>
+        </div>
+        <div class="row pinkcheck">
+          <div class="col-11 text-left greencheck">
+            <input type="checkbox" />&nbsp;Write today's plan
+          </div>
+          <div class="col-1 text-right emphasized-item">
+            <img src="img/trash_can.svg" />
+          </div>
+          <div class="col-11 text-left greencheck">
+            <input type="checkbox" />&nbsp;Write today's plan
+          </div>
+          <div class="col-1 text-right">
+            <img src="img/trash_can.svg" />
+          </div>
+          <!-- this bootstrap icon seems need to add the css local files to let it work. -->
+          <!-- <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> -->
+        </div>
+        <!-- <div class="todo_items pinkcheck"></div>
+            <div class="all_items"></div>
+            <div class="done_items"></div> -->
+      </div>
+      <form>
+        <div class="todo-input-wrapper emphasized-item">
+          <!-- <input id="todo-input" type="text" placeholder="Add a new TODO"> -->
+          <input
+            type="text"
+            name="new-todo"
+            required
+            id="todo-input"
+            autocomplete="off"
+            placeholder="Add a new TODO..."
+          />
+          <button class="reset-btn" type="reset"></button>
+        </div>
+        <input type="button" class="add-todo emphasized-item" />
+      </form>
+    </div>
+
+    <footer class="fixed-bottom">
+      <div class="container text-center">
+        This page is implemented by &nbsp;<a href="mailto:maxmaman@gmail.com"
+          >maxmaman@gmail.com</a
+        >
+      </div>
+    </footer>
+    <script type="text/javascript" src="/js/todo.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

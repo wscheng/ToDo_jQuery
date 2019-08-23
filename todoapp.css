@@ -1,0 +1,108 @@
+.todo-body {
+  width: 500px;
+}
+html * {
+  font-family: Livvic;
+}
+
+#todo-sheet {
+  height: 500px;
+  /* TODO this left and right padding is not relative to the real parent, need to be checked */
+  padding: 10px 20px 5px;
+  border: 1px solid #bfbfbf;
+  /* offset-x | offset-y | blur-radius | spread-radius | color */
+  box-shadow: 0px 30px 30px 20px #aaaaaa;
+  /* overflow: scroll; */
+}
+
+.todo-titles a {
+  text-decoration: none;
+}
+
+.todo-titles div.selected {
+  border-bottom: 4px solid #2ebd59;
+}
+
+.todo-titles div.selected a {
+  color: black;
+}
+
+.emphasized-item {
+  transition: all 0.2s ease-in-out;
+}
+
+.emphasized-item:hover {
+  transform: scale(1.1);
+}
+
+.todo-input-wrapper {
+  position: relative;
+  margin: 10px 40px 10px;
+}
+
+#todo-input {
+  border-radius: 20px;
+  border: 2px solid #aaa;
+  padding: 15px 40px 15px 15px;
+  width: 350px;
+  height: 15px;
+}
+
+#todo-input:focus {
+  box-shadow: 0 0 10px 5px #b0e0ee;
+  border: 2px solid #bebede;
+  outline: none;
+}
+
+.reset-btn {
+  background: url(img/delete.svg) no-repeat center;
+  background-size: 15px 15px;
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  background-color: pink;
+  right: 35px;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  padding: 2px;
+  border-radius: 50%;
+  text-align: center;
+  color: white;
+  font-weight: normal;
+  font-size: 12px;
+  box-shadow: 0 0 2px #e50f0f;
+  cursor: pointer;
+}
+.reset-btn:focus {
+  outline: none;
+}
+#todo-input:not(:valid) ~ .reset-btn {
+  display: none;
+}
+
+.add-todo {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background: url(img/add.svg) no-repeat center;
+  background-color: white;
+  background-size: 40px 40px;
+  border: none;
+}
+
+.add-todo:focus {
+  outline: none;
+}
+
+.pinkcheck {
+  /* Note: The border will be invisible if its style is not defined. This is because the style defaults to none.
+    https://developer.mozilla.org/zh-TW/docs/Web/CSS/border */
+  /* border: 2px solid red;
+    background: pink; */
+}
+
+.greencheck {
+  /* border: 2px solid black;
+    background: green; */
+}
