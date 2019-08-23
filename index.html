@@ -35,25 +35,42 @@
   <body>
     <div class="container text-center todo-body">
       <h1>someone's ToDo List</h1>
-      <div class="container">
-        <div class="row todo-titles">
-          <div class="col selected"><a href="#todo">ToDo</a></div>
-          <div class="col"><a href="#all">All</a></div>
-          <div class="col"><a href="#done">Done</a></div>
+      <div class="row todo-sections">
+        <div class="col selected"><a href="#todo">ToDo</a></div>
+        <div class="col"><a href="#all">All</a></div>
+        <div class="col"><a href="#done">Done</a></div>
+      </div>
+      <div class="row greencheck" id="todo-sheet">
+        <div class="col pinkcheck">
+          <!-- 1st todo item -->
+          <div class="row no-gutters todo-item text-left ongoing ">
+            <div class="col-1">
+              <input type="checkbox" class="todo-checkbox" />
+            </div>
+            <div class="col-10">
+              Eat breakfast
+            </div>
+            <div class="col-1">
+              <img class="todo-delete" src="img/trash_can.svg" />
+            </div>
+            <div class="clearfix d-none d-sm-block"></div>
+          </div>
+          <!-- 2ne todo item -->
+          <div class="row no-gutters todo-item text-left ongoing ">
+            <div class="col-1">
+              <input type="checkbox" class="todo-checkbox" />
+            </div>
+            <div class="col-10">
+              Write today's plan
+            </div>
+            <div class="col-1">
+              <img class="todo-delete" src="img/trash_can.svg" />
+            </div>
+          </div>
         </div>
       </div>
-      <div class="container greencheck" id="todo-sheet">
-        <div class="row pinkcheck todo-item ongoing">
-          <div class="col-1 greencheck">
-            <input type="checkbox" />
-          </div>
-          <div class="col-10 text-left">Eat breakfast</div>
-          <div class="col-1 text-right">
-            <img src="img/trash_can.svg" />
-          </div>
-        </div>
-        <div class="row pinkcheck">
-          <div class="col-11 text-left greencheck">
+      <!-- <div class="row pinkcheck"> -->
+      <!-- <div class="col-11 text-left greencheck">
             <input type="checkbox" />&nbsp;Write today's plan
           </div>
           <div class="col-1 text-right emphasized-item">
@@ -64,29 +81,27 @@
           </div>
           <div class="col-1 text-right">
             <img src="img/trash_can.svg" />
-          </div>
-          <!-- this bootstrap icon seems need to add the css local files to let it work. -->
-          <!-- <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> -->
+          </div> -->
+      <!-- this bootstrap icon seems need to add the css local files to let it work. -->
+      <!-- <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> -->
+      <div class="row justify-content-center text-center">
+        <div class="col-10">
+          <form>
+            <div class="todo-input-wrapper emphasized-item">
+              <input
+                type="text"
+                name="new-todo"
+                required
+                id="todo-input"
+                autocomplete="off"
+                placeholder="Add a new TODO..."
+              />
+              <button class="reset-btn" type="reset"></button>
+            </div>
+            <input type="button" class="add-todo emphasized-item" />
+          </form>
         </div>
-        <!-- <div class="todo_items pinkcheck"></div>
-            <div class="all_items"></div>
-            <div class="done_items"></div> -->
       </div>
-      <form>
-        <div class="todo-input-wrapper emphasized-item">
-          <!-- <input id="todo-input" type="text" placeholder="Add a new TODO"> -->
-          <input
-            type="text"
-            name="new-todo"
-            required
-            id="todo-input"
-            autocomplete="off"
-            placeholder="Add a new TODO..."
-          />
-          <button class="reset-btn" type="reset"></button>
-        </div>
-        <input type="button" class="add-todo emphasized-item" />
-      </form>
     </div>
 
     <footer class="fixed-bottom">
