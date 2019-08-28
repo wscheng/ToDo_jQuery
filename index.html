@@ -36,9 +36,11 @@
     <div class="container text-center todo-body">
       <h1>someone's ToDo List</h1>
       <div class="row todo-sections">
-        <div class="col selected"><a href="#todo">ToDo</a></div>
-        <div class="col"><a href="#all">All</a></div>
-        <div class="col"><a href="#done">Done</a></div>
+        <div class="col selected" id="todo_section">
+          <a href="#todo">ToDo</a>
+        </div>
+        <div class="col" id="all_section"><a href="#all">All</a></div>
+        <div class="col" id="done_section"><a href="#done">Done</a></div>
       </div>
       <div class="row greencheck" id="todo-sheet">
         <div class="col pinkcheck">
@@ -68,6 +70,8 @@
             </div>
           </div>
         </div>
+        <div class="row greencheck" id="all-sheet"></div>
+        <div class="row greencheck" id="done-sheet"></div>
       </div>
       <!-- <div class="row pinkcheck"> -->
       <!-- <div class="col-11 text-left greencheck">
@@ -111,7 +115,6 @@
         >
       </div>
     </footer>
-    <script type="text/javascript" src="/js/todo.js"></script>
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
       integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -127,5 +130,6 @@
       integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
       crossorigin="anonymous"
     ></script>
+    <script type="text/javascript" src="js/todoapp.js"></script>
   </body>
 </html>
