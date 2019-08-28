@@ -43,7 +43,7 @@
         <div class="col" id="done_section"><a href="#done">Done</a></div>
       </div>
       <div class="row greencheck" id="todo-sheet">
-        <div class="col pinkcheck">
+        <div class="col-12 pinkcheck selected" id="todo-items">
           <!-- 1st todo item -->
           <div class="row no-gutters todo-item text-left ongoing ">
             <div class="col-1">
@@ -70,8 +70,37 @@
             </div>
           </div>
         </div>
-        <div class="row greencheck" id="all-sheet"></div>
-        <div class="row greencheck" id="done-sheet"></div>
+        <div class="col-12 greencheck" id="all-items">
+          <!-- 1st todo item -->
+          <div class="row no-gutters todo-item text-left ongoing ">
+            <div class="col-1">
+              <input type="checkbox" class="todo-checkbox" />
+            </div>
+            <div class="col-10">
+              Eat breakfast
+            </div>
+            <div class="col-1">
+              <img class="todo-delete" src="img/trash_can.svg" />
+            </div>
+            <div class="clearfix d-none d-sm-block"></div>
+          </div>
+        </div>
+
+        <div class="col-12 greencheck" id="done-items">
+          <!-- 1st todo item -->
+          <div class="row no-gutters todo-item text-left ongoing ">
+            <div class="col-1">
+              <input type="checkbox" class="todo-checkbox" />
+            </div>
+            <div class="col-10">
+              Eat breakfast
+            </div>
+            <div class="col-1">
+              <img class="todo-delete" src="img/trash_can.svg" />
+            </div>
+            <div class="clearfix d-none d-sm-block"></div>
+          </div>
+        </div>
       </div>
       <!-- <div class="row pinkcheck"> -->
       <!-- <div class="col-11 text-left greencheck">
@@ -115,9 +144,10 @@
         >
       </div>
     </footer>
+    <!-- use the full version of jquery. If you use slim.min version, the animation of hide("slow") will not working -->
     <script
-      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      src="https://code.jquery.com/jquery-3.3.1.js"
+      integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
       crossorigin="anonymous"
     ></script>
     <script
