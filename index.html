@@ -33,8 +33,18 @@
   </head>
 
   <body>
+    <div class="light-box">
+      <div class="user-title">
+        <p>Please enter your username</p>
+        <div class="title-form">
+          <input type="text" id="title-input" placeholder="username" />
+          <input type="submit" id="title-btn" value="OK" />
+        </div>
+      </div>
+    </div>
+
     <div class="container text-center todo-body">
-      <h1>someone's ToDo List</h1>
+      <h1 id="username_title">someone's ToDo List</h1>
       <div class="row todo-sections">
         <div class="col selected" id="todo_section">
           <a href="#todo">ToDo</a>
@@ -45,11 +55,11 @@
       <div class="row greencheck" id="todo-sheet">
         <div class="col-12 pinkcheck selected" id="todo-items">
           <!-- 1st todo item -->
-          <div class="row no-gutters todo-item text-left ongoing ">
+          <div class="row no-gutters todo-item text-left ongoing">
             <div class="col-1">
               <input type="checkbox" class="todo-checkbox" />
             </div>
-            <div class="col-10">
+            <div class="col-10" contenteditable="true">
               Eat breakfast
             </div>
             <div class="col-1">
@@ -136,9 +146,8 @@
         </div>
       </div>
     </div>
-
     <footer class="fixed-bottom">
-      <div class="container text-center">
+      <div class="container text-center" id="copyright-block">
         This page is implemented by &nbsp;<a href="mailto:maxmaman@gmail.com"
           >maxmaman@gmail.com</a
         >

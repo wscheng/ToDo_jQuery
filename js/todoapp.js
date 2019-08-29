@@ -62,4 +62,30 @@ $(document).ready(function() {
       toDoSheetMap[section_key].sheet_body.show(200);
     }
   });
+
+  // Enter user name
+  $("#title-btn").click(function() {
+    var text = $("#title-input").val();
+
+    console.log(text);
+
+    if (text.length !== 0) {
+      $("#username_title").text(text + "'s ToDo List");
+      $("#title-input").val("");
+      $(".light-box").slideUp(500);
+    } else {
+      alert("Please enter your name, thanks!");
+      $("#title-input").focus();
+      return false;
+    }
+  });
+  // when trash icon clicked
+  // when todo item info updated
+  // when a done item set not done, move to todo
+
+  // when a new todo item added
+  // sort order
+  // 1.undone
+  // 2.last updated
+  //
 });
