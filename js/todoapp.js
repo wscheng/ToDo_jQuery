@@ -54,8 +54,6 @@ $(document).ready(function() {
     }
   }
 
-  console.log(toDoSheetMap);
-  console.log(TODO_SHEET_KEYS);
   TODO_SHEET_KEYS.forEach(function(section_key) {
     toDoSheetMap[section_key].section_title.click(section_clicked);
     if (section_key == TODO_ID) {
@@ -65,12 +63,12 @@ $(document).ready(function() {
 
   // Enter user name
   $("#title-btn").click(function() {
-    var text = $("#title-input").val();
+    var username = $("#title-input").val();
 
-    console.log(text);
+    console.log(username);
 
-    if (text.length !== 0) {
-      $("#username_title").text(text + "'s ToDo List");
+    if (username.length !== 0) {
+      $("#username_title").text(username + "'s ToDo List");
       $("#title-input").val("");
       $(".light-box").slideUp(500);
     } else {
@@ -79,6 +77,13 @@ $(document).ready(function() {
       return false;
     }
   });
+  class ToDoItem {
+    constructor(todo_content, update_time, is_done) {
+      this.todo_content = todo_content;
+      this.update_time = update_time;
+      this.is_done = is_done;
+    }
+  }
   // when trash icon clicked
   // when todo item info updated
   // when a done item set not done, move to todo
@@ -88,4 +93,122 @@ $(document).ready(function() {
   // 1.undone
   // 2.last updated
   //
+  function formatDateTime(date) {
+    var y = date.getFullYear();
+    var M = date.getMonth() + 1;
+    M = M < 10 ? "0" + M : M;
+    var d = date.getDate();
+    d = d < 10 ? "0" + d : d;
+    var h = date.getHours();
+    h = h < 10 ? "0" + h : h;
+    var m = date.getMinutes();
+    m = m < 10 ? "0" + m : m;
+    var s = date.getSeconds();
+    s = s < 10 ? "0" + s : s;
+    var ms = date.getMilliseconds();
+    if (ms < 10) {
+      ms = "00" + ms;
+    } else if (ms < 100) {
+      ms = "0" + ms;
+    }
+    return parseInt(y + M + d + h + m + s + ms);
+  }
+  todoArr = [
+    new ToDoItem(
+      "Eat breakfast",
+      formatDateTime(new Date(2000, 0, 1, 0, 0, 1, 0)),
+      false
+    ),
+    new ToDoItem(
+      "Write today's plan",
+      formatDateTime(new Date(2000, 0, 1, 0, 0, 2, 0)),
+      false
+    )
+  ];
+
+  function get_new_todo_item_html_div(todoItem, hide_when_add) {
+    todo_item_div =
+      '<div class="row no-gutters todo-item text-left ongoing" id="' +
+      todoItem.update_time +
+      (hide_when_add ? '" style="display: none;' : "") +
+      '"> \
+  <div class="col-1"> \
+  <input type="checkbox" class="todo-checkbox" /> \
+  </div> \
+  <div class="col-10" contenteditable="true">' +
+      todoItem.todo_content +
+      '</div> \
+  <div class="col-1"> \
+    <img class="todo-delete" src="img/trash_can.svg" /> \
+  </div> \
+  <div class="clearfix d-none d-sm-block"></div>\
+</div>';
+    return todo_item_div;
+  }
+
+  function addToDoItemToUI(todo_content) {
+    if (todo_content.length != 0) {
+      todoItem = new ToDoItem(todo_content, formatDateTime(new Date()), false);
+      console.log(
+        Object.getOwnPropertyNames(todoItem),
+        formatDateTime(new Date()),
+        todo_content
+      );
+      todoArr.push(todoItem);
+      // if todo section now
+      switch (current_todo_id) {
+        case TODO_ID:
+          $("#todo-items").prepend(get_new_todo_item_html_div(todoItem, true));
+          $("#" + todoItem.update_time).show("slow");
+          $("#all-items").prepend(get_new_todo_item_html_div(todoItem, false));
+          break;
+        case ALL_ID:
+          $("#all-items").prepend(get_new_todo_item_html_div(todoItem, true));
+          $("#" + todoItem.update_time).show("slow");
+          $("#todo-items").prepend(get_new_todo_item_html_div(todoItem, false));
+          break;
+      }
+
+      $("#todo-input").val("");
+      return true;
+    } else {
+      alert("Please enter todo item, thanks!");
+      $("#todo-input").focus();
+      return false;
+    }
+  }
+
+  // add new todo item
+  $("#add-todo").click(function() {
+    var todo_content = $("#todo-input").val();
+    addToDoItemToUI(todo_content);
+  });
+
+  var ENTER_KEY_CODE = 13;
+  $("#todo-input").keydown(function(e) {
+    if (e.keyCode == ENTER_KEY_CODE) {
+      var todo_content = $("#todo-input").val();
+      return addToDoItemToUI(todo_content);
+    }
+  });
+  // ToDo item done
+  $(document).on("click", ".todo-checkbox", function() {
+    if ($(this).attr("checked")) {
+      var todo_item_id = $(this)
+        .parent()
+        .parent()
+        .attr("id");
+      // strike through
+      // $(this)
+      //   .parent()
+      //   .next();
+
+      // disappear animation
+      // remove
+    } else {
+      // recover to ongoing
+    }
+  });
+
+  // Initialize demo TODO items
 });

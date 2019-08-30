@@ -1,7 +1,8 @@
 html,
 body {
   position: relative;
-  width: 100%;
+  /* if use 100% at width, when close to 350, the right size will have some blank */
+  width: 100vw;
   height: 100%;
   min-width: 320px;
 }
@@ -130,11 +131,12 @@ html * {
   box-shadow: 0 0 2px #e50f0f;
   cursor: pointer;
 }
+
 .reset-btn:focus {
   outline: none;
 }
 
-.add-todo {
+#add-todo {
   width: 40px;
   height: 40px;
   border-radius: 20px;
@@ -144,7 +146,7 @@ html * {
   border: none;
 }
 
-.add-todo:focus {
+#add-todo:focus {
   outline: none;
 }
 
