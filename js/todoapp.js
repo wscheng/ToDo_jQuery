@@ -193,16 +193,45 @@ $(document).ready(function() {
   });
   // ToDo item done
   $(document).on("click", ".todo-checkbox", function() {
-    if ($(this).attr("checked")) {
-      var todo_item_id = $(this)
+    var todo_item_id = $(this)
+      .parent()
+      .parent()
+      .attr("id");
+    // strike through
+    console.log(
+      "TEST",
+      $(this)
         .parent()
+        .next()
+        .attr("class")
+    );
+    if (
+      $(this)
         .parent()
-        .attr("id");
-      // strike through
-      // $(this)
-      //   .parent()
-      //   .next();
+        .next()
+        .attr("class")
+        .indexOf("do-strikethrough") >= 0
+    ) {
+      $(this)
+        .parent()
+        .next()
+        .addClass("remove-strikethrough");
+      $(this)
+        .parent()
+        .next()
+        .removeClass("do-strikethrough");
+    } else {
+      $(this)
+        .parent()
+        .next()
+        .addClass("do-strikethrough");
+      $(this)
+        .parent()
+        .next()
+        .removeClass("remove-strikethrough");
+    }
 
+    if ($(this).attr("checked")) {
       // disappear animation
       // remove
     } else {
