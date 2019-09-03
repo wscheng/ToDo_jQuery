@@ -239,6 +239,10 @@ html * {
   color: gray;
 }
 
+.done {
+  color: gray;
+}
+
 .done::after,
 .do-strikethrough::after {
   content: "";
@@ -250,7 +254,7 @@ html * {
   /* this border is to set the border line from the 2nd line(whye 2nd line,
   because we use after) */
   margin-top: -0.7em;
-  background: black;
+  background: gray;
 }
 
 .do-strikethrough::after {
@@ -260,10 +264,12 @@ html * {
 
 @keyframes strikethrough-animation {
   from {
-    transform: scaleX(0);
+    width: 0%;
+    background: black;
   }
   to {
-    transform: scaleX(1);
+    width: 100%;
+    background: gray;
   }
 }
 
@@ -274,7 +280,7 @@ html * {
   height: 2px;
   box-shadow: 0 1px rgba(255, 255, 255, 0.6);
   margin-top: -0.7em;
-  background: black;
+  background: gray;
   animation: remove-strikethrough-animation 1s 0s cubic-bezier(0.55, 0, 0.1, 1)
     1;
 }
@@ -288,7 +294,7 @@ html * {
   }
 }
 
-@keyframes remove-strikethrough-animation-left-to-right {
+/* @keyframes remove-strikethrough-animation-left-to-right {
   from {
     transform-origin: center right;
     transform: scaleX(1);
@@ -297,4 +303,4 @@ html * {
     transform-origin: center right;
     transform: scaleX(0);
   }
-}
+} */

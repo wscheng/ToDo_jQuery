@@ -31,7 +31,6 @@ $(document).ready(function() {
         console.log("current title", clicked_title);
         current_todo_id = section_key;
       }
-      // add active to the clicked section title
     });
     if (current_todo_id == prev_todo_id) {
       // do nothing if clicking the same section
@@ -43,6 +42,12 @@ $(document).ready(function() {
         ", current=",
         current_todo_id
       );
+      // stop all the animation in previous section
+      $(".todo-content").removeClass("do-strikethrough");
+      $(".todo-content").removeClass("remove-strikethrough");
+      $(".todo-checkbox").off("animationend");
+      $(".todo-checkbox").prop("disabled", false);
+      // change section title
       toDoSheetMap[prev_todo_id].section_title.removeClass("selected");
       toDoSheetMap[current_todo_id].section_title.addClass("selected");
       // fade out the previous sheet
@@ -193,51 +198,41 @@ $(document).ready(function() {
   });
   // ToDo item done
   $(document).on("click", ".todo-checkbox", function() {
+    var todo_item_checkbox = $(this);
+    console.log("checked=", todo_item_checkbox.is(":checked"));
+
+    // todo_item_checkbox.on("click", function(event) {
+    //   event.event.preventDefault();
+    // });
     var todo_item_id = $(this)
       .parent()
       .parent()
       .attr("id");
-    // strike through
-    console.log(
-      "TEST",
-      $(this)
-        .parent()
-        .next()
-        .attr("class")
-    );
-    if (
-      $(this)
-        .parent()
-        .next()
-        .attr("class")
-        .indexOf("do-strikethrough") >= 0
-    ) {
-      $(this)
-        .parent()
-        .next()
-        .addClass("remove-strikethrough");
-      $(this)
-        .parent()
-        .next()
-        .removeClass("do-strikethrough");
-    } else {
-      $(this)
-        .parent()
-        .next()
-        .addClass("do-strikethrough");
-      $(this)
-        .parent()
-        .next()
-        .removeClass("remove-strikethrough");
-    }
+    var todoItemText = $(this)
+      .parent()
+      .next();
 
-    if ($(this).attr("checked")) {
-      // disappear animation
-      // remove
+    todo_item_checkbox.prop("disabled", true);
+    if (todoItemText.attr("class").indexOf("done") >= 0) {
+      todoItemText.removeClass("done");
+      todoItemText.addClass("remove-strikethrough");
+      todoItemText.bind("animationend", function(e) {
+        todoItemText.off("animationend");
+        todoItemText.removeClass("remove-strikethrough");
+        todo_item_checkbox.prop("disabled", false);
+      });
     } else {
-      // recover to ongoing
+      todoItemText.removeClass("remove-strikethrough");
+      todoItemText.addClass("done");
+      todoItemText.addClass("do-strikethrough");
+      todoItemText.on("animationend", function(e) {
+        // console.log("animation name=", e.originalEvent.animationName);
+        todoItemText.off("animationend");
+        todoItemText.removeClass("do-strikethrough");
+        todo_item_checkbox.prop("disabled", false);
+      });
     }
+    //todo_item_checkbox.on("click", todo_checkbox_onclick);
   });
-
   // Initialize demo TODO items
 });
