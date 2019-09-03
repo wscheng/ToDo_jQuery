@@ -45,7 +45,6 @@ $(document).ready(function() {
       // stop all the animation in previous section
       $(".todo-content").removeClass("do-strikethrough");
       $(".todo-content").removeClass("remove-strikethrough");
-      $(".todo-checkbox").off("animationend");
       $(".todo-checkbox").prop("disabled", false);
       // change section title
       toDoSheetMap[prev_todo_id].section_title.removeClass("selected");
@@ -216,8 +215,7 @@ $(document).ready(function() {
     if (todoItemText.attr("class").indexOf("done") >= 0) {
       todoItemText.removeClass("done");
       todoItemText.addClass("remove-strikethrough");
-      todoItemText.bind("animationend", function(e) {
-        todoItemText.off("animationend");
+      todoItemText.one("animationend", function(e) {
         todoItemText.removeClass("remove-strikethrough");
         todo_item_checkbox.prop("disabled", false);
       });
@@ -225,9 +223,8 @@ $(document).ready(function() {
       todoItemText.removeClass("remove-strikethrough");
       todoItemText.addClass("done");
       todoItemText.addClass("do-strikethrough");
-      todoItemText.on("animationend", function(e) {
+      todoItemText.one("animationend", function(e) {
         // console.log("animation name=", e.originalEvent.animationName);
-        todoItemText.off("animationend");
         todoItemText.removeClass("do-strikethrough");
         todo_item_checkbox.prop("disabled", false);
       });
