@@ -36,15 +36,52 @@ $(document).ready(function() {
       // do nothing if clicking the same section
       return;
     } else {
-      console.log(
-        "click another section prev=",
-        prev_todo_id,
-        ", current=",
-        current_todo_id
-      );
       // stop all the animation in previous section
-      $(".todo-content").removeClass("do-strikethrough");
-      $(".todo-content").removeClass("remove-strikethrough");
+      // if animation still running, those animationend callback will not
+      // be fired; thus, we have to do the callback here
+      if ($(".todo-content.do-strikethrough").length) {
+        switch (prev_todo_id) {
+          case TODO_ID:
+            $(".todo-content.do-strikethrough")
+              .parent()
+              .remove();
+            break;
+          case ALL_ID:
+            var done_todo_item_id = $(".todo-content.do-strikethrough")
+              .parent()
+              .attr("id");
+            $("#all-items #" + done_todo_item_id).remove();
+            console.log(
+              "objec get=",
+              todoArr[done_todo_item_id],
+              ",id=" + done_todo_item_id,
+              ", arr=",
+              todoArr
+            );
+            add_done_item_to_all_section(todoArr[done_todo_item_id], false);
+            break;
+        }
+      }
+      if ($(".todo-content.remove-strikethrough").length) {
+        switch (prev_todo_id) {
+          case ALL_ID:
+            var ongoing_todo_item_id = $(".todo-content.remove-strikethrough")
+              .parent()
+              .attr("id");
+            $("#all-items #" + ongoing_todo_item_id).remove();
+            add_ongoing_item_to_all_section(
+              todoArr[ongoing_todo_item_id],
+              false
+            );
+            break;
+          case DONE_ID:
+            $(".todo-content.remove-strikethrough")
+              .parent()
+              .remove();
+            break;
+        }
+      }
+      // restore the checkbox to clickable while switching sections
       $(".todo-checkbox").prop("disabled", false);
       // change section title
       toDoSheetMap[prev_todo_id].section_title.removeClass("selected");
@@ -118,18 +155,17 @@ $(document).ready(function() {
     }
     return parseInt(y + M + d + h + m + s + ms);
   }
-  var todoArr = [
-    new ToDoItem(
-      "Eat breakfast",
-      formatDateTime(new Date(2000, 0, 1, 0, 0, 1, 0)),
-      false
-    ),
-    new ToDoItem(
-      "Write today's plan",
-      formatDateTime(new Date(2000, 0, 1, 0, 0, 2, 0)),
-      false
-    )
-  ];
+  var todoArr = {};
+  todoArr[formatDateTime(new Date(2000, 0, 1, 0, 0, 1, 0))] = new ToDoItem(
+    "Eat breakfast",
+    formatDateTime(new Date(2000, 0, 1, 0, 0, 1, 0)),
+    false
+  );
+  todoArr[formatDateTime(new Date(2000, 0, 1, 0, 0, 2, 0))] = new ToDoItem(
+    "Write today's plan",
+    formatDateTime(new Date(2000, 0, 1, 0, 0, 2, 0)),
+    false
+  );
 
   function get_todo_item_html_div(todoItem, hide_when_add) {
     todo_item_div =
@@ -165,7 +201,7 @@ $(document).ready(function() {
         formatDateTime(new Date()),
         todo_content
       );
-      todoArr.push(todoItem);
+      todoArr[todoItem.init_time] = todoItem;
       // if todo section now
       switch (current_todo_id) {
         case TODO_ID:
@@ -213,6 +249,7 @@ $(document).ready(function() {
       .parent()
       .parent()
       .attr("id");
+    console.log("id=", todo_item_id);
     var todoItemText = $(this)
       .parent()
       .next();
@@ -226,14 +263,11 @@ $(document).ready(function() {
 
     if (todoItemBar.attr("class").indexOf("done") >= 0) {
       // the TODO item set to undone
-      var ongoing_todo_item;
-      todoArr.forEach(function(todo_item) {
-        if (todo_item_id == todo_item.init_time) {
-          todo_item.update_time = formatDateTime(new Date());
-          todo_item.is_done = false;
-          ongoing_todo_item = todo_item;
-        }
-      });
+      console.log(todoArr);
+      var ongoing_todo_item = todoArr[todo_item_id];
+      ongoing_todo_item.update_time = formatDateTime(new Date());
+      ongoing_todo_item.is_done = false;
+
       todoItemBar.removeClass("done");
       todoItemBar.addClass("ongoing");
       todoItemText.addClass("remove-strikethrough");
@@ -244,52 +278,49 @@ $(document).ready(function() {
             // should never happen
             break;
           case ALL_ID:
-            add_ongoing_item_to_todo_section(ongoing_todo_item);
             todoItemBar.fadeOut(300, function() {
               todoItemBar.remove();
             });
             // move it to top
-            add_done_item_to_all_section(done_todo_item, true);
-            $("#done-items #" + ongoing_todo_item.init_time).remove();
+            add_ongoing_item_to_all_section(ongoing_todo_item, true);
             break;
           case DONE_ID:
             todoItemBar.fadeOut(300, function() {
               todoItemBar.remove(false);
             });
-            $("#all-items #" + ongoing_todo_item.init_time).remove();
-            add_ongoing_item_to_todo_section(ongoing_todo_item);
-            add_ongoing_item_to_all_section(ongoing_todo_item, false);
             break;
         }
       });
+      if (current_todo_id == ALL_ID) {
+        add_ongoing_item_to_todo_section(ongoing_todo_item);
+        $("#done-items #" + ongoing_todo_item.init_time).remove();
+      } else if (current_todo_id == DONE_ID) {
+        add_ongoing_item_to_todo_section(ongoing_todo_item);
+        $("#all-items #" + ongoing_todo_item.init_time).remove();
+        add_ongoing_item_to_all_section(ongoing_todo_item, false);
+      }
     } else {
       // the TODO item set to done
-      var done_todo_item;
-      todoArr.forEach(function(todo_item) {
-        if (todo_item_id == todo_item.init_time) {
-          todo_item.update_time = formatDateTime(new Date());
-          todo_item.is_done = true;
-          done_todo_item = todo_item;
-        }
-      });
+      var done_todo_item = todoArr[todo_item_id];
+      done_todo_item.update_time = formatDateTime(new Date());
+      done_todo_item.is_done = true;
+
       console.log("donetodo=", done_todo_item);
       todoItemText.removeClass("remove-strikethrough");
       todoItemBar.removeClass("ongoing");
       todoItemBar.addClass("done");
       todoItemText.addClass("do-strikethrough");
       todoItemText.one("animationend", function(e) {
-        // console.log("animation name=", e.originalEvent.animationName);
+        console.log("animation end");
+        console.log("animation name=", e.originalEvent.animationName);
         todoItemText.removeClass("do-strikethrough");
         switch (current_todo_id) {
           case TODO_ID:
             todoItemBar.fadeOut(300, function() {
               todoItemBar.remove(false);
             });
-            $("#all-items #" + done_todo_item.init_time).remove();
-            add_done_item_to_all_section(done_todo_item, false);
             break;
           case ALL_ID:
-            $("#todo-items #" + done_todo_item.init_time).remove();
             todoItemBar.fadeOut(300, function() {
               todoItemBar.remove();
             });
@@ -301,6 +332,12 @@ $(document).ready(function() {
             break;
         }
       });
+      if (current_todo_id == TODO_ID) {
+        $("#all-items #" + done_todo_item.init_time).remove();
+        add_done_item_to_all_section(done_todo_item, false);
+      } else if (current_todo_id == ALL_ID) {
+        $("#todo-items #" + done_todo_item.init_time).remove();
+      }
       add_done_item_to_done_section(done_todo_item);
     }
   });
@@ -347,13 +384,13 @@ $(document).ready(function() {
   function add_ongoing_item_to_all_section(ongoing_todo_item, need_animation) {
     if (need_animation) {
       $("#all-items").prepend(get_todo_item_html_div(ongoing_todo_item, true));
-      $("#all-items #" + done_todo_item.init_time).show("slow");
+      $("#all-items #" + ongoing_todo_item.init_time).show("slow");
     } else {
       $("#all-items").prepend(get_todo_item_html_div(ongoing_todo_item, false));
     }
   }
-  function add_ongoing_item_to_todo_section(done_todo_item) {
-    $("#todo-items").prepend(get_todo_item_html_div(done_todo_item, false));
+  function add_ongoing_item_to_todo_section(ongoing_todo_item) {
+    $("#todo-items").prepend(get_todo_item_html_div(ongoing_todo_item, false));
   }
   // Initialize demo TODO items
 });
