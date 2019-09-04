@@ -243,7 +243,7 @@ html * {
   color: gray;
 }
 
-.done::after,
+.done > div.todo-content::after,
 .do-strikethrough::after {
   content: "";
   position: absolute;
