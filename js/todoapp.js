@@ -214,6 +214,10 @@ $(document).ready(function() {
           $("#" + todoItem.init_time).show("slow");
           $("#todo-items").prepend(get_todo_item_html_div(todoItem, false));
           break;
+        case DONE_ID:
+          $("#all-items").prepend(get_todo_item_html_div(todoItem, false));
+          $("#todo-items").prepend(get_todo_item_html_div(todoItem, false));
+          break;
       }
       $("#todo-input").val("");
       return true;
