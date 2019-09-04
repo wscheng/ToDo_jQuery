@@ -336,6 +336,7 @@ $(document).ready(function() {
             break;
         }
       });
+
       if (current_todo_id == TODO_ID) {
         $("#all-items #" + done_todo_item.init_time).remove();
         add_done_item_to_all_section(done_todo_item, false);
@@ -370,7 +371,7 @@ $(document).ready(function() {
         $("#all-items>div.ongoing")
           .last()
           .after(get_todo_item_html_div(done_todo_item, false));
-      } else if ($("done".length > 0)) {
+      } else if ($("#all-items>div.done").length > 0) {
         // 2.if no ongoing items, find 1st done item
         $("#all-items>div.done")
           .first()
@@ -379,7 +380,6 @@ $(document).ready(function() {
         // 3.if there is no ongoing, done items do nothing
         $("#all-items").append(get_todo_item_html_div(done_todo_item, false));
       }
-      $("#all-items #" + done_todo_item.init_time).prop("checked", true);
     }
   }
   function add_done_item_to_done_section(done_todo_item) {
