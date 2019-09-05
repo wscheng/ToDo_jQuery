@@ -114,6 +114,7 @@ $(document).ready(function() {
 
   // when trash icon clicked
   function get_todo_item_id_from_bar(todo_item_bar) {
+    if (todo_item_bar.length == 0) return;
     var id;
     todo_item_bar
       .attr("class")
