@@ -109,23 +109,11 @@ $(document).ready(function() {
       return false;
     }
   });
-  class ToDoItem {
-    constructor(todo_content, init_time, is_done) {
-      this.todo_content = todo_content;
-      this.init_time = init_time;
-      this.update_time = init_time;
-      this.is_done = is_done;
-    }
-  }
-  // when trash icon clicked
-  // when todo item info updated
-  // when a done item set not done, move to todo
 
-  // when a new todo item added
-  // sort order
-  // 1.undone
-  // 2.last updated
-  //
+  // when trash icon clicked
+
+  // when todo item info updated
+
   function formatDateTime(date) {
     var y = date.getFullYear();
     var M = date.getMonth() + 1;
@@ -146,17 +134,6 @@ $(document).ready(function() {
     }
     return parseInt(y + M + d + h + m + s + ms);
   }
-  var todoArr = {};
-  todoArr[formatDateTime(new Date(2000, 0, 1, 0, 0, 1, 0))] = new ToDoItem(
-    "Eat breakfast",
-    formatDateTime(new Date(2000, 0, 1, 0, 0, 1, 0)),
-    false
-  );
-  todoArr[formatDateTime(new Date(2000, 0, 1, 0, 0, 2, 0))] = new ToDoItem(
-    "Write today's plan",
-    formatDateTime(new Date(2000, 0, 1, 0, 0, 2, 0)),
-    false
-  );
 
   function get_todo_item_html_div(todoItem, hide_when_add) {
     todo_item_div =
@@ -307,6 +284,10 @@ $(document).ready(function() {
       add_done_item_to_done_section(done_todo_item);
     }
   });
+
+  // sort order
+  // 1.undone
+  // 2.last updated
   function update_done_item_in_all_section(done_todo_item, need_animation) {
     var orig_todo_item_bar = $("#all-items #" + done_todo_item.init_time);
     // don't move if the done item is at the last position, or
@@ -359,9 +340,11 @@ $(document).ready(function() {
       }
     }
   }
+
   function add_done_item_to_done_section(done_todo_item) {
     $("#done-items").prepend(get_todo_item_html_div(done_todo_item, false));
   }
+
   function update_ongoing_item_in_all_section(
     ongoing_todo_item,
     need_animation
@@ -388,8 +371,53 @@ $(document).ready(function() {
       $("#all-items").prepend(get_todo_item_html_div(ongoing_todo_item, false));
     }
   }
+
   function add_ongoing_item_to_todo_section(ongoing_todo_item) {
     $("#todo-items").prepend(get_todo_item_html_div(ongoing_todo_item, false));
   }
+
+  function compareByInitTime(a, b) {
+    if (a.iniit_time < b.iniit_time) {
+      return -1;
+    }
+    if (a.iniit_time > b.iniit_time) {
+      return 1;
+    }
+    return 0;
+  }
+
+  // [Class] ToDo Item
+  class ToDoItem {
+    constructor(todo_content, init_time, is_done) {
+      this.todo_content = todo_content;
+      this.init_time = init_time;
+      this.update_time = init_time;
+      this.is_done = is_done;
+    }
+  }
+
   // Initialize demo TODO items
+  var todoArr = {};
+  todoArr[formatDateTime(new Date(2000, 0, 1, 0, 0, 1, 0))] = new ToDoItem(
+    "Eat breakfast",
+    formatDateTime(new Date(2000, 0, 1, 0, 0, 1, 0)),
+    false
+  );
+  todoArr[formatDateTime(new Date(2000, 0, 1, 0, 0, 2, 0))] = new ToDoItem(
+    "Write today's plan",
+    formatDateTime(new Date(2000, 0, 1, 0, 0, 2, 0)),
+    false
+  );
+  Object.keys(todoArr)
+    .sort(compareByInitTime)
+    .forEach(function(init_todo_item_id) {
+      var init_todo_item = todoArr[init_todo_item_id];
+      if (init_todo_item.is_done) {
+        $("#all-items").append(get_todo_item_html_div(init_todo_item, false));
+        $("#done-items").append(get_todo_item_html_div(init_todo_item, false));
+      } else {
+        $("#todo-items").append(get_todo_item_html_div(init_todo_item, false));
+        $("#all-items").append(get_todo_item_html_div(init_todo_item, false));
+      }
+    });
 });
