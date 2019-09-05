@@ -50,15 +50,7 @@ $(document).ready(function() {
             var done_todo_item_id = $(".todo-content.do-strikethrough")
               .parent()
               .attr("id");
-            $("#all-items #" + done_todo_item_id).remove();
-            console.log(
-              "objec get=",
-              todoArr[done_todo_item_id],
-              ",id=" + done_todo_item_id,
-              ", arr=",
-              todoArr
-            );
-            add_done_item_to_all_section(todoArr[done_todo_item_id], false);
+            update_done_item_in_all_section(todoArr[done_todo_item_id], false);
             break;
         }
       }
@@ -68,8 +60,7 @@ $(document).ready(function() {
             var ongoing_todo_item_id = $(".todo-content.remove-strikethrough")
               .parent()
               .attr("id");
-            $("#all-items #" + ongoing_todo_item_id).remove();
-            add_ongoing_item_to_all_section(
+            update_ongoing_item_in_all_section(
               todoArr[ongoing_todo_item_id],
               false
             );
@@ -246,9 +237,6 @@ $(document).ready(function() {
     var todo_item_checkbox = $(this);
     console.log("checked=", todo_item_checkbox.is(":checked"));
 
-    // todo_item_checkbox.on("click", function(event) {
-    //   event.event.preventDefault();
-    // });
     var todo_item_id = $(this)
       .parent()
       .parent()
@@ -272,124 +260,131 @@ $(document).ready(function() {
       ongoing_todo_item.update_time = formatDateTime(new Date());
       ongoing_todo_item.is_done = false;
 
-      todoItemBar.removeClass("done");
-      todoItemBar.addClass("ongoing");
       todoItemText.addClass("remove-strikethrough");
-      todoItemText.one("animationend", function(e) {
-        todoItemText.removeClass("remove-strikethrough");
-        switch (current_todo_id) {
-          case TODO_ID:
-            // should never happen
-            break;
-          case ALL_ID:
-            todoItemBar.fadeOut(300, function() {
-              todoItemBar.remove();
-            });
-            // move it to top
-            add_ongoing_item_to_all_section(ongoing_todo_item, true);
-            break;
-          case DONE_ID:
-            todoItemBar.fadeOut(300, function() {
-              todoItemBar.remove(false);
-            });
-            break;
-        }
-      });
       if (current_todo_id == ALL_ID) {
-        add_ongoing_item_to_todo_section(ongoing_todo_item);
+        todoItemText.one("animationend", function(e) {
+          todoItemText.removeClass("remove-strikethrough");
+
+          update_ongoing_item_in_all_section(ongoing_todo_item, true);
+        });
         $("#done-items #" + ongoing_todo_item.init_time).remove();
       } else if (current_todo_id == DONE_ID) {
-        add_ongoing_item_to_todo_section(ongoing_todo_item);
+        todoItemText.one("animationend", function(e) {
+          todoItemText.removeClass("remove-strikethrough");
+          todoItemBar.fadeOut(300, function() {
+            todoItemBar.remove(false);
+          });
+        });
         $("#all-items #" + ongoing_todo_item.init_time).remove();
-        add_ongoing_item_to_all_section(ongoing_todo_item, false);
+        update_ongoing_item_in_all_section(ongoing_todo_item, false);
       }
+      add_ongoing_item_to_todo_section(ongoing_todo_item);
     } else {
       // the TODO item set to done
       var done_todo_item = todoArr[todo_item_id];
       done_todo_item.update_time = formatDateTime(new Date());
       done_todo_item.is_done = true;
 
-      console.log("donetodo=", done_todo_item);
       todoItemText.removeClass("remove-strikethrough");
-      todoItemBar.removeClass("ongoing");
-      todoItemBar.addClass("done");
+      todoItemText.attr("contenteditable", "false");
       todoItemText.addClass("do-strikethrough");
-      todoItemText.one("animationend", function(e) {
-        console.log("animation end");
-        console.log("animation name=", e.originalEvent.animationName);
-        todoItemText.removeClass("do-strikethrough");
-        switch (current_todo_id) {
-          case TODO_ID:
-            todoItemBar.fadeOut(300, function() {
-              todoItemBar.remove(false);
-            });
-            break;
-          case ALL_ID:
-            todoItemBar.fadeOut(300, function() {
-              todoItemBar.remove();
-            });
-            // move it behind ongoing items
-            add_done_item_to_all_section(done_todo_item, true);
-            break;
-          case DONE_ID:
-            // should never happen
-            break;
-        }
-      });
 
       if (current_todo_id == TODO_ID) {
-        $("#all-items #" + done_todo_item.init_time).remove();
-        add_done_item_to_all_section(done_todo_item, false);
+        todoItemText.one("animationend", function(e) {
+          todoItemText.removeClass("do-strikethrough");
+          todoItemBar.fadeOut(300, function() {
+            todoItemBar.remove(false);
+          });
+        });
+        update_done_item_in_all_section(done_todo_item, false);
       } else if (current_todo_id == ALL_ID) {
+        todoItemText.one("animationend", function(e) {
+          todoItemText.removeClass("do-strikethrough");
+          update_done_item_in_all_section(done_todo_item, true);
+        });
         $("#todo-items #" + done_todo_item.init_time).remove();
       }
       add_done_item_to_done_section(done_todo_item);
     }
   });
-  function add_done_item_to_all_section(done_todo_item, need_animation) {
+  function update_done_item_in_all_section(done_todo_item, need_animation) {
+    var orig_todo_item_bar = $("#all-items #" + done_todo_item.init_time);
+    // don't move if the done item is at the last position, or
+    if (
+      $("#all-items>div.ongoing")
+        .last()
+        .attr("id") == done_todo_item.init_time
+    ) {
+      orig_todo_item_bar.replaceWith(
+        get_todo_item_html_div(done_todo_item, false)
+      );
+      return;
+    }
     if (need_animation) {
+      // move it behind ongoing items
       // move to top of done items
-      if ($("#all-items>div.ongoing").length > 0) {
+      if ($("#all-items>div.ongoing").length > 1) {
         // 1.find the ongoing end
+        orig_todo_item_bar.fadeOut(300, function() {
+          orig_todo_item_bar.remove();
+        });
         $("#all-items>div.ongoing")
           .last()
           .after(get_todo_item_html_div(done_todo_item, true));
-      } else if ($("#all-items>div.done".length > 0)) {
-        // 2.if no ongoing items, find 1st done item
+        $("#all-items #" + done_todo_item.init_time).show("slow");
+      } else if ($("#all-items>div.done").length > 0) {
+        // 2.if no other ongoing items, find 1st done item
+        orig_todo_item_bar.fadeOut(300, function() {
+          orig_todo_item_bar.remove();
+        });
         $("#all-items>div.done")
           .first()
           .before(get_todo_item_html_div(done_todo_item, true));
-      } else {
-        // 3.if there is no ongoing, done items do nothing
-        $("#all-items").append(get_todo_item_html_div(done_todo_item, true));
+        $("#all-items #" + done_todo_item.init_time).show("slow");
       }
-      $("#all-items #" + done_todo_item.init_time).show("slow");
     } else {
       // move to top of done items
-      if ($("#all-items>div.ongoing").length > 0) {
+      if ($("#all-items>div.ongoing").length > 1) {
         // 1.find the ongoing end
+        orig_todo_item_bar.remove();
         $("#all-items>div.ongoing")
           .last()
           .after(get_todo_item_html_div(done_todo_item, false));
       } else if ($("#all-items>div.done").length > 0) {
         // 2.if no ongoing items, find 1st done item
+        orig_todo_item_bar.remove();
         $("#all-items>div.done")
           .first()
           .before(get_todo_item_html_div(done_todo_item, false));
-      } else {
-        // 3.if there is no ongoing, done items do nothing
-        $("#all-items").append(get_todo_item_html_div(done_todo_item, false));
       }
     }
   }
   function add_done_item_to_done_section(done_todo_item) {
     $("#done-items").prepend(get_todo_item_html_div(done_todo_item, false));
   }
-  function add_ongoing_item_to_all_section(ongoing_todo_item, need_animation) {
+  function update_ongoing_item_in_all_section(
+    ongoing_todo_item,
+    need_animation
+  ) {
+    var orig_todo_item_bar = $("#all-items #" + ongoing_todo_item.init_time);
+    if (
+      $("#all-items>div")
+        .first()
+        .attr("id") == ongoing_todo_item.init_time
+    ) {
+      orig_todo_item_bar.replaceWith(
+        get_todo_item_html_div(ongoing_todo_item, false)
+      );
+      return;
+    }
     if (need_animation) {
+      orig_todo_item_bar.fadeOut(300, function() {
+        orig_todo_item_bar.remove();
+      });
       $("#all-items").prepend(get_todo_item_html_div(ongoing_todo_item, true));
       $("#all-items #" + ongoing_todo_item.init_time).show("slow");
     } else {
+      orig_todo_item_bar.remove();
       $("#all-items").prepend(get_todo_item_html_div(ongoing_todo_item, false));
     }
   }
