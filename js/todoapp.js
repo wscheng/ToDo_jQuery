@@ -47,9 +47,9 @@ $(document).ready(function() {
               .remove();
             break;
           case ALL_ID:
-            var done_todo_item_id = $(".todo-content.do-strikethrough")
-              .parent()
-              .attr("id");
+            var done_todo_item_id = get_todo_item_id_from_bar(
+              $(".todo-content.do-strikethrough").parent()
+            );
             update_done_item_in_all_section(todoArr[done_todo_item_id], false);
             break;
         }
@@ -57,9 +57,9 @@ $(document).ready(function() {
       if ($(".todo-content.remove-strikethrough").length) {
         switch (prev_todo_id) {
           case ALL_ID:
-            var ongoing_todo_item_id = $(".todo-content.remove-strikethrough")
-              .parent()
-              .attr("id");
+            var ongoing_todo_item_id = get_todo_item_id_from_bar(
+              $(".todo-content.remove-strikethrough").parent()
+            );
             update_ongoing_item_in_all_section(
               todoArr[ongoing_todo_item_id],
               false
@@ -111,8 +111,37 @@ $(document).ready(function() {
   });
 
   // when trash icon clicked
+  function get_todo_item_id_from_bar(todo_item_bar) {
+    var id;
+    todo_item_bar
+      .attr("class")
+      .split(" ")
+      .forEach(function(class_name) {
+        if (class_name.indexOf("id_") == 0) {
+          id = class_name;
+        }
+      });
+    return id;
+  }
+  $(document).on("click", ".todo-delete", function() {
+    var todo_item_id = get_todo_item_id_from_bar(
+      $(this)
+        .parent()
+        .parent()
+    );
+    console.log("id=", todo_item_id);
+    var todo_item = todoArr[todo_item_id];
+    var result = confirm('Delete "' + todo_item.todo_content + '"?');
+    if (result) {
+      console.log($("." + todo_item_id).length);
+      $("." + todo_item_id).remove();
+    }
+  });
 
-  // when todo item info updated
+  // TODO when todo item info updated
+  // move the items to the top
+  // future work, we have to consider the situation that user change sections
+  // when we're still moving items...
 
   function formatDateTime(date) {
     var y = date.getFullYear();
@@ -139,10 +168,11 @@ $(document).ready(function() {
     todo_item_div =
       '<div class="row no-gutters todo-item text-left ' +
       (todoItem.is_done ? "done" : "ongoing") +
-      '" id="' +
-      todoItem.init_time +
-      (hide_when_add ? '" style="display: none;' : "") +
-      '"> \
+      " " +
+      todoItem.id +
+      '" ' +
+      (hide_when_add ? ' style="display: none;"' : "") +
+      '> \
   <div class="col-1"> \
   <input type="checkbox" class="todo-checkbox" ' +
       (todoItem.is_done ? "checked" : "") +
@@ -169,17 +199,17 @@ $(document).ready(function() {
         formatDateTime(new Date()),
         todo_content
       );
-      todoArr[todoItem.init_time] = todoItem;
+      todoArr[todoItem.id] = todoItem;
       // if todo section now
       switch (current_todo_id) {
         case TODO_ID:
           $("#todo-items").prepend(get_todo_item_html_div(todoItem, true));
-          $("#" + todoItem.init_time).show("slow");
+          $("." + todoItem.id).show("slow");
           $("#all-items").prepend(get_todo_item_html_div(todoItem, false));
           break;
         case ALL_ID:
           $("#all-items").prepend(get_todo_item_html_div(todoItem, true));
-          $("#" + todoItem.init_time).show("slow");
+          $("." + todoItem.id).show("slow");
           $("#todo-items").prepend(get_todo_item_html_div(todoItem, false));
           break;
         case DONE_ID:
@@ -214,18 +244,13 @@ $(document).ready(function() {
     var todo_item_checkbox = $(this);
     console.log("checked=", todo_item_checkbox.is(":checked"));
 
-    var todo_item_id = $(this)
-      .parent()
-      .parent()
-      .attr("id");
-    console.log("id=", todo_item_id);
-    var todoItemText = $(this)
-      .parent()
-      .next();
     var todoItemBar = $(this)
       .parent()
       .parent();
-
+    var todo_item_id = get_todo_item_id_from_bar(todoItemBar);
+    var todoItemText = $(this)
+      .parent()
+      .next();
     // don't let user click the checkbox when arrangement of all
     // section is not done yet
     todo_item_checkbox.prop("disabled", true);
@@ -244,7 +269,7 @@ $(document).ready(function() {
 
           update_ongoing_item_in_all_section(ongoing_todo_item, true);
         });
-        $("#done-items #" + ongoing_todo_item.init_time).remove();
+        $("#done-items ." + ongoing_todo_item.id).remove();
       } else if (current_todo_id == DONE_ID) {
         todoItemText.one("animationend", function(e) {
           todoItemText.removeClass("remove-strikethrough");
@@ -252,7 +277,7 @@ $(document).ready(function() {
             todoItemBar.remove(false);
           });
         });
-        $("#all-items #" + ongoing_todo_item.init_time).remove();
+        $("#all-items ." + ongoing_todo_item.id).remove();
         update_ongoing_item_in_all_section(ongoing_todo_item, false);
       }
       add_ongoing_item_to_todo_section(ongoing_todo_item);
@@ -279,7 +304,7 @@ $(document).ready(function() {
           todoItemText.removeClass("do-strikethrough");
           update_done_item_in_all_section(done_todo_item, true);
         });
-        $("#todo-items #" + done_todo_item.init_time).remove();
+        $("#todo-items ." + done_todo_item.id).remove();
       }
       add_done_item_to_done_section(done_todo_item);
     }
@@ -289,12 +314,11 @@ $(document).ready(function() {
   // 1.undone
   // 2.last updated
   function update_done_item_in_all_section(done_todo_item, need_animation) {
-    var orig_todo_item_bar = $("#all-items #" + done_todo_item.init_time);
+    var orig_todo_item_bar = $("#all-items ." + done_todo_item.id);
     // don't move if the done item is at the last position, or
     if (
-      $("#all-items>div.ongoing")
-        .last()
-        .attr("id") == done_todo_item.init_time
+      get_todo_item_id_from_bar($("#all-items>div.ongoing").last()) ==
+      done_todo_item.id
     ) {
       orig_todo_item_bar.replaceWith(
         get_todo_item_html_div(done_todo_item, false)
@@ -312,7 +336,7 @@ $(document).ready(function() {
         $("#all-items>div.ongoing")
           .last()
           .after(get_todo_item_html_div(done_todo_item, true));
-        $("#all-items #" + done_todo_item.init_time).show("slow");
+        $("#all-items ." + done_todo_item.id).show("slow");
       } else if ($("#all-items>div.done").length > 0) {
         // 2.if no other ongoing items, find 1st done item
         orig_todo_item_bar.fadeOut(300, function() {
@@ -321,7 +345,7 @@ $(document).ready(function() {
         $("#all-items>div.done")
           .first()
           .before(get_todo_item_html_div(done_todo_item, true));
-        $("#all-items #" + done_todo_item.init_time).show("slow");
+        $("#all-items ." + done_todo_item.id).show("slow");
       }
     } else {
       // move to top of done items
@@ -349,11 +373,10 @@ $(document).ready(function() {
     ongoing_todo_item,
     need_animation
   ) {
-    var orig_todo_item_bar = $("#all-items #" + ongoing_todo_item.init_time);
+    var orig_todo_item_bar = $("#all-items ." + ongoing_todo_item.id);
     if (
-      $("#all-items>div")
-        .first()
-        .attr("id") == ongoing_todo_item.init_time
+      get_todo_item_id_from_bar($("#all-items>div").first()) ==
+      ongoing_todo_item.id
     ) {
       orig_todo_item_bar.replaceWith(
         get_todo_item_html_div(ongoing_todo_item, false)
@@ -365,7 +388,7 @@ $(document).ready(function() {
         orig_todo_item_bar.remove();
       });
       $("#all-items").prepend(get_todo_item_html_div(ongoing_todo_item, true));
-      $("#all-items #" + ongoing_todo_item.init_time).show("slow");
+      $("#all-items ." + ongoing_todo_item.id).show("slow");
     } else {
       orig_todo_item_bar.remove();
       $("#all-items").prepend(get_todo_item_html_div(ongoing_todo_item, false));
@@ -389,6 +412,7 @@ $(document).ready(function() {
   // [Class] ToDo Item
   class ToDoItem {
     constructor(todo_content, init_time, is_done) {
+      this.id = "id_" + init_time;
       this.todo_content = todo_content;
       this.init_time = init_time;
       this.update_time = init_time;
@@ -398,16 +422,24 @@ $(document).ready(function() {
 
   // Initialize demo TODO items
   var todoArr = {};
-  todoArr[formatDateTime(new Date(2000, 0, 1, 0, 0, 1, 0))] = new ToDoItem(
-    "Eat breakfast",
-    formatDateTime(new Date(2000, 0, 1, 0, 0, 1, 0)),
-    false
+  function add_init_items(todo_item) {
+    todoArr[todo_item.id] = todo_item;
+  }
+  add_init_items(
+    new ToDoItem(
+      "Eat breakfast",
+      formatDateTime(new Date(2000, 0, 1, 0, 0, 1, 0)),
+      false
+    )
   );
-  todoArr[formatDateTime(new Date(2000, 0, 1, 0, 0, 2, 0))] = new ToDoItem(
-    "Write today's plan",
-    formatDateTime(new Date(2000, 0, 1, 0, 0, 2, 0)),
-    false
+  add_init_items(
+    new ToDoItem(
+      "Write today's plan",
+      formatDateTime(new Date(2000, 0, 1, 0, 0, 2, 0)),
+      false
+    )
   );
+
   Object.keys(todoArr)
     .sort(compareByInitTime)
     .forEach(function(init_todo_item_id) {
