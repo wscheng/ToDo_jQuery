@@ -82,6 +82,8 @@ $(document).ready(function() {
       toDoSheetMap[prev_todo_id].sheet_body.hide(200, function() {
         toDoSheetMap[current_todo_id].sheet_body.addClass("selected");
         toDoSheetMap[current_todo_id].sheet_body.show("slow");
+        // auto scroll to top, while switching section
+        toDoSheetMap[current_todo_id].sheet_body.scrollTop(0);
       });
     }
   }

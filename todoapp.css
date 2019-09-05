@@ -45,19 +45,6 @@ html * {
   transform: scale(1.1);
 }
 
-/* .todo-item {
-  position: relative;
-  margin: 10px 40px 10px;
-} */
-
-/* .todo-checkbox {
-  float: left;
-} */
-
-/* .todo-delete {
-  float: right;
-} */
-
 .todo-input-wrapper {
   /* relative is needed. if you remove it, the reset button will not be right place while you move the mouse around */
   position: relative;
@@ -86,6 +73,8 @@ html * {
 #all-items,
 #done-items {
   display: none;
+  height: 480px;
+  overflow: auto;
 }
 
 #todo-sheet.selected,
