@@ -90,7 +90,7 @@ html * {
 }
 
 .reset-btn {
-  background: url(img/delete.svg) no-repeat center;
+  background: url(../img/delete.svg) no-repeat center;
   background-size: 15px 15px;
   width: 15px;
   height: 15px;
@@ -118,7 +118,7 @@ html * {
   width: 40px;
   height: 40px;
   border-radius: 20px;
-  background: url(img/add.svg) no-repeat center;
+  background: url(../img/add.svg) no-repeat center;
   background-color: white;
   background-size: 40px 40px;
   border: none;
