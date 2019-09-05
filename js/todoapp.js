@@ -142,6 +142,22 @@ $(document).ready(function() {
   // move the items to the top
   // future work, we have to consider the situation that user change sections
   // when we're still moving items...
+  var kept_orig_todo_content;
+  $(document).on("focus", ".todo-content", function() {
+    kept_orig_todo_content = $(this).html();
+  });
+  $(document).on("blur", ".todo-content", function() {
+    var changed_content = $.trim($(this).html());
+    // TODO now trim is not working, because the space will turn into nbsp;
+    // if content is empty, restore to origin content
+    if (changed_content === "") {
+      $(this).html(kept_orig_todo_content);
+      return;
+    }
+    var todo_item_id = get_todo_item_id_from_bar($(this).parent());
+    todoArr[todo_item_id].todo_content = changed_content;
+    $("div." + todo_item_id + ">div.todo-content").html(changed_content);
+  });
 
   function formatDateTime(date) {
     var y = date.getFullYear();
