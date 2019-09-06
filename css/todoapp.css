@@ -1,6 +1,5 @@
 html,
 body {
-  position: relative;
   /* if use 100% at width, when close to 350, the right size will have some blank */
   width: 100vw;
   height: 100%;
@@ -150,24 +149,22 @@ html * {
 }
 
 .light-box {
-  position: absolute;
+  display: flex;
+  position: fixed;
+  left: 0;
   top: 0;
-  bottom: 0;
   width: 100%;
-  height: 100vh;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
   background-color: rgba(0, 0, 0, 0.9);
   z-index: 100;
 }
 
 .light-box .user-title {
   position: absolute;
-  top: 50%;
-  left: 50%;
   width: 500px;
   height: 200px;
-  /* half width & height */
-  margin-top: -100px;
-  margin-left: -250px;
   padding: 35px 0;
   border: 1px solid white;
   font-size: 25px;
@@ -211,16 +208,13 @@ html * {
 @media only screen and (max-width: 650px) {
   .light-box .user-title {
     width: 350px;
-    margin-left: -175px;
   }
 }
 
 @media only screen and (max-width: 320px) {
   .light-box .user-title {
     width: 290px;
-    margin-left: -145px;
     height: 250px;
-    margin-top: -125px;
   }
 }
 
