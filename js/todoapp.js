@@ -114,7 +114,7 @@ $(document).ready(function() {
 
   // when trash icon clicked
   function get_todo_item_id_from_bar(todo_item_bar) {
-    if (todo_item_bar.length == 0) return;
+    //if (todo_item_bar.length == 0) return;
     var id;
     todo_item_bar
       .attr("class")
@@ -296,7 +296,6 @@ $(document).ready(function() {
             todoItemBar.remove(false);
           });
         });
-        $("#all-items ." + ongoing_todo_item.id).remove();
         update_ongoing_item_in_all_section(ongoing_todo_item, false);
       }
       add_ongoing_item_to_todo_section(ongoing_todo_item);
